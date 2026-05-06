@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kartik Sakhuja Portfolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="script.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="styles.css" rel="stylesheet"/>
+</head>
+<body class="font-body-sm overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/10 shadow-[0_0_15px_rgba(0,242,255,0.1)]">
+<div class="flex items-center gap-6">
+<span class="text-cyan-400 font-bold tracking-widest text-lg font-headline-md">AWS Dashboard</span>
+<div class="hidden md:flex items-center gap-4 text-xs font-mono-data opacity-60">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse" id="backend-status-dot"></span><span id="backend-status-text">SYSTEM:CHECKING...</span></span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">speed</span> <span id="backend-latency-text">LATENCY: -</span></span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" id="backend-uptime-icon">cloud_sync</span> <span id="backend-uptime-text">UPTIME: CHECKING...</span></span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex bg-surface-container h-8 rounded px-3 items-center border border-white/5">
+<span class="material-symbols-outlined text-xs text-cyan-400 mr-2">terminal</span>
+<input class="bg-transparent border-none text-xs font-mono-data focus:ring-0 text-primary p-0 w-32" placeholder="EXEC_CMD..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-cyan-400 transition-all"><span class="material-symbols-outlined">terminal</span></button>
+<button class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-cyan-400 transition-all"><span class="material-symbols-outlined">notifications</span></button>
+<button class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-cyan-400 transition-all"><span class="material-symbols-outlined">settings</span></button>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-6 z-40 bg-[#0a0a0a]/90 backdrop-blur-2xl border-r border-white/10 w-64 hidden md:flex">
+<div class="px-4 mb-6">
+<button aria-controls="identity-panel" aria-expanded="false" class="w-full rounded-lg border border-transparent hover:border-cyan-400/20 hover:bg-white/5 transition-all duration-300 p-2 text-left" id="identity-hover-trigger" type="button">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded border border-cyan-400/30 overflow-hidden shrink-0">
+<img alt="Kartik Sakhuja" class="w-full h-full object-cover" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm4PKP9WEQv0R4L-A2mShuwFwRAiDnW6Ej3Q&amp;s"/>
+</div>
+<div class="min-w-0">
+<p class="text-primary font-headline-md text-sm leading-none mb-1 truncate">Kartik Sakhuja</p>
+<p class="text-slate-500 font-mono-data text-[10px] tracking-widest truncate">Student at MIT-ADT University</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-slate-400" id="identity-chevron">chevron_right</span>
+</div>
+</button>
+</div>
+<nav class="flex-1 flex flex-col gap-1 identity-blur-target" id="sidebar-nav-links">
+<a class="flex items-center gap-3 bg-cyan-400/10 text-cyan-400 border-l-4 border-cyan-400 px-4 py-3 font-label-caps text-xs uppercase tracking-widest transition-all" href="#system">
+<span class="material-symbols-outlined">monitor_heart</span> System Health
+            </a>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 font-label-caps text-xs uppercase tracking-widest hover:bg-white/5 hover:text-cyan-200 transition-colors" href="#architecture">
+<span class="material-symbols-outlined">account_tree</span> Architecture
+            </a>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 font-label-caps text-xs uppercase tracking-widest hover:bg-white/5 hover:text-cyan-200 transition-colors" href="#pipeline">
+<span class="material-symbols-outlined">account_tree</span> Projects
+            </a>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 font-label-caps text-xs uppercase tracking-widest hover:bg-white/5 hover:text-cyan-200 transition-colors" href="#career">
+<span class="material-symbols-outlined">history</span> Experience
+            </a>
+<a class="flex items-center gap-3 text-slate-400 px-4 py-3 font-label-caps text-xs uppercase tracking-widest hover:bg-white/5 hover:text-cyan-200 transition-colors" href="#">
+<span class="material-symbols-outlined">description</span> Logs
+            </a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-primary-container text-on-primary font-label-caps text-xs py-3 rounded tracking-widest hover:brightness-110 transition-all active:translate-x-1 duration-100">
+                DEPLOY_RESUME
+            </button>
+<div class="mt-6 flex flex-col gap-2">
+<a class="flex items-center gap-2 text-slate-500 text-[10px] font-label-caps uppercase hover:text-cyan-400 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help</span> Support
+                </a>
+<a class="flex items-center gap-2 text-slate-500 text-[10px] font-label-caps uppercase hover:text-cyan-400 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">check_circle</span> Uptime: 100%
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-64 pt-20 px-6 pb-20 space-y-12 relative" id="main-canvas">
+<div class="identity-backdrop" id="identity-backdrop"></div>
+<div class="identity-panel identity-main-panel" id="identity-panel">
+<div class="glass-panel identity-panel-card rounded-xl border border-cyan-400/25 p-4 md:p-6">
+<div class="identity-panel-header flex items-start justify-between gap-4 mb-4 md:mb-5">
+<div class="flex items-start gap-4">
+<div class="w-14 h-14 md:w-16 md:h-16 rounded-lg border border-cyan-300/30 overflow-hidden shadow-[0_0_24px_rgba(0,219,231,0.25)]">
+<img alt="Kartik Sakhuja Profile" class="w-full h-full object-cover" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm4PKP9WEQv0R4L-A2mShuwFwRAiDnW6Ej3Q&amp;s"/>
+</div>
+<div>
+<h3 class="text-primary font-headline-md text-lg md:text-xl leading-tight">Kartik Sakhuja</h3>
+<p class="text-slate-300 text-xs md:text-sm mt-1">Cloud + AI Systems Builder</p>
+<div class="flex flex-wrap items-center gap-2 mt-2">
+<span class="identity-chip">MIT-ADT University</span>
+<span class="identity-chip">Vice-President, Cloud Club</span>
+<span class="identity-chip">Open Source Contributor</span>
+</div>
+</div>
+</div>
+<button aria-label="Close identity panel" class="w-8 h-8 rounded border border-white/10 text-slate-300 hover:text-cyan-300 hover:border-cyan-300/40 transition-colors flex items-center justify-center shrink-0" id="identity-close-btn" type="button">
+<span class="material-symbols-outlined text-base">close</span>
+</button>
+</div>
+
+<p class="text-slate-200/95 text-xs md:text-sm leading-relaxed">
+Kartik Sakhuja is a Computer Science undergraduate specializing in cloud computing, focused on building scalable, real-world systems that integrate AI/ML, computer vision, and cloud infrastructure. He has hands-on experience developing end-to-end solutions-from autonomous rover systems for grape detection with the Indian Council of Agricultural Research to IoT networks powered by AWS for real-time data processing. Alongside strong technical skills in TensorFlow, Docker, and modern backend frameworks, he has contributed to open-source through GirlScript Foundation and leads initiatives as Vice-President of his university's Cloud Computing Club, mentoring peers and driving practical cloud and DevOps learning.
+            </p>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4 mb-4">
+<div class="identity-metric-card">
+<p class="identity-metric-label">Build Focus</p>
+<p class="identity-metric-value">Cloud Native Systems</p>
+</div>
+<div class="identity-metric-card">
+<p class="identity-metric-label">Specialties</p>
+<p class="identity-metric-value">AI/ML + Computer Vision</p>
+</div>
+<div class="identity-metric-card">
+<p class="identity-metric-label">Leadership</p>
+<p class="identity-metric-value">Mentoring + DevOps Labs</p>
+</div>
+</div>
+
+<div class="mt-2 flex flex-col md:flex-row md:flex-wrap gap-2.5">
+<a class="identity-btn identity-btn-primary" href="https://drive.google.com/file/d/1naIbPq1shvDHH_tfDDagWLdBP9s75PMr/view?usp=sharing" id="download-resume-btn" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-sm">download</span>
+Download Resume
+                </a>
+
+<div class="relative">
+<button aria-controls="connect-menu" aria-expanded="false" class="identity-btn identity-btn-neutral" id="connect-toggle" type="button">
+<span class="material-symbols-outlined text-sm">group</span>
+Connect with Kartik
+<span class="material-symbols-outlined text-sm" id="connect-chevron">keyboard_arrow_down</span>
+</button>
+
+<div class="connect-menu mt-2 w-full md:min-w-[220px] glass-panel border border-cyan-300/20 rounded p-1.5" id="connect-menu">
+<a class="block w-full px-3 py-2 text-[11px] text-slate-300 hover:text-cyan-300 hover:bg-cyan-400/10 rounded transition-colors" href="https://www.linkedin.com/in/kartik-sakhuja-33a67b286/?originalSubdomain=in" rel="noopener noreferrer" target="_blank">LinkedIn</a>
+<a class="block w-full px-3 py-2 text-[11px] text-slate-300 hover:text-cyan-300 hover:bg-cyan-400/10 rounded transition-colors" href="https://www.instagram.com/kartik.devs?igsh=MTJleXE2cDl4dTduMQ==" rel="noopener noreferrer" target="_blank">Instagram</a>
+<a class="block w-full px-3 py-2 text-[11px] text-slate-300 hover:text-cyan-300 hover:bg-cyan-400/10 rounded transition-colors" href="mailto:kartik.sakhuja2004@gmail.com?subject=Portfolio%20Connect">Email</a>
+</div>
+</div>
+
+<button class="identity-btn identity-btn-ai" id="ask-ai-btn" type="button">
+<span class="material-symbols-outlined text-sm">smart_toy</span>
+Ask the AI
+                </button>
+
+<button class="identity-btn identity-btn-neutral" id="open-to-work-toggle" type="button" title="Toggle Open to Work status">
+<span class="material-symbols-outlined text-sm" id="open-to-work-icon">work</span>
+<span id="open-to-work-text">Open to Work</span>
+                </button>
+</div>
+<div class="ai-chat-shell hidden mt-3" id="ai-chat-shell">
+<div class="ai-chat-log" id="ai-chat-log" aria-live="polite">
+<div class="ai-chat-message ai-chat-message-assistant">
+Ask me anything about Kartik's skills, projects, experience, or resume. You can also talk to Kartik by saying "i want to talk to kartik".
+                    </div>
+</div>
+<form class="ai-chat-composer mt-3" id="ai-chat-form">
+<textarea aria-label="Ask the AI a question" class="ai-chat-input" id="ai-chat-input" placeholder="Ask about Kartik's cloud work, AI/ML projects, internships, leadership, and more..."></textarea>
+<div class="flex items-center justify-between gap-2 mt-2">
+<p class="text-[10px] text-cyan-300/80 font-mono-data min-h-[14px]" id="ask-ai-feedback"></p>
+<button class="ai-chat-send" id="ai-chat-send" type="submit">
+Send
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- Section 1: System Health -->
+<section class="space-y-6" id="system">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-xl text-primary flex items-center gap-3">
+<span class="text-cyan-400 material-symbols-outlined text-4xl">analytics</span>
+                    AWS Connection Status
+                </h2>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container border border-white/10 rounded font-mono-data text-[10px] text-cyan-400">STS identity check</span>
+</div>
+</div>
+<div class="glass-panel p-5 rounded flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-red-500" id="aws-status-dot"></span>
+<div>
+<p class="font-label-caps text-xs text-slate-400" id="aws-status-text">AWS:CHECKING...</p>
+<p class="text-sm text-primary" id="aws-detail-text">Connecting to AWS STS...</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-3 text-[10px] font-mono-data text-slate-400">
+<span id="aws-region-text">REGION: -</span>
+<span id="aws-arn-text">ACCOUNT: -</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Telemetry Cards -->
+<div class="glass-panel p-6 rounded relative overflow-hidden group">
+<div class="absolute inset-0 scanline opacity-10"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-xs text-slate-400">CPU UTILIZATION</span>
+<span class="material-symbols-outlined text-cyan-400">memory</span>
+</div>
+<div class="text-4xl font-headline-xl text-primary mb-2" id="dashboard-cpu-value">-</div>
+<div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-cyan-400 glow-cyan" id="dashboard-cpu-bar" style="width: 0%"></div>
+</div>
+<div class="mt-4 flex justify-between font-mono-data text-[10px] text-slate-500">
+<span id="dashboard-cpu-load">LOAD: -</span>
+<span class="text-tertiary-container" id="dashboard-cpu-status">-</span>
+</div>
+</div>
+</div>
+<div class="glass-panel p-6 rounded relative overflow-hidden group">
+<div class="absolute inset-0 scanline opacity-10"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-xs text-slate-400">MEMORY USAGE</span>
+<span class="material-symbols-outlined text-cyan-400">database</span>
+</div>
+<div class="text-4xl font-headline-xl text-primary mb-2" id="dashboard-memory-value">-</div>
+<div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container glow-cyan" id="dashboard-memory-bar" style="width: 0%"></div>
+</div>
+<div class="mt-4 flex justify-between font-mono-data text-[10px] text-slate-500">
+<span id="dashboard-memory-limit">LIMIT: 16.0 GB</span>
+<span class="text-tertiary-container" id="dashboard-memory-status">-</span>
+</div>
+</div>
+</div>
+<div class="glass-panel p-6 rounded relative overflow-hidden group">
+<div class="absolute inset-0 scanline opacity-10"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-xs text-slate-400">REQUEST VOLUME</span>
+<span class="material-symbols-outlined text-cyan-400">swap_horiz</span>
+</div>
+<div class="text-4xl font-headline-xl text-primary mb-2"><span id="dashboard-request-value">-</span><span class="text-lg opacity-50">/sec</span></div>
+<div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container glow-cyan" id="dashboard-request-bar" style="width: 0%"></div>
+</div>
+<div class="mt-4 flex justify-between font-mono-data text-[10px] text-slate-500">
+<span id="dashboard-request-peak">PEAK: 12.0k</span>
+<span class="text-primary" id="dashboard-request-status">-</span>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Traffic Graph -->
+<div class="lg:col-span-2 glass-panel p-6 rounded relative min-h-[300px]">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-label-caps text-xs text-slate-400 uppercase tracking-widest">Network_Traffic_Inbound_Outbound</h3>
+<div class="flex gap-4 font-mono-data text-[10px]">
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-cyan-400 rounded-full"></span> IN</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-secondary rounded-full"></span> OUT</span>
+</div>
+</div>
+<div class="h-48 w-full relative flex items-end justify-between px-2 gap-1">
+<!-- Simulated Sparkline/Bar Chart -->
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[40%] rounded-t-sm relative group">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-surface-container p-1 rounded text-[8px] border border-white/10">1.2GB</div>
+</div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[65%] rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[45%] rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[85%] rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[95%] rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[70%] rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[55%] rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[60%] rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[40%] rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[30%] rounded-t-sm"></div>
+</div>
+</div>
+<!-- Orchestration Log -->
+<div class="glass-panel p-6 rounded relative flex flex-col">
+<h3 class="font-label-caps text-xs text-slate-400 uppercase tracking-widest mb-4">AWS Dashboard Logs</h3>
+<div class="flex-1 font-mono-data text-[11px] space-y-2 overflow-y-auto max-h-[220px] pr-2">
+<p class="text-slate-500"><span class="text-cyan-400/60">[14:22:01]</span> <span class="text-primary">POD_SCALED:</span> worker-v2 (n+2)</p>
+<p class="text-slate-500"><span class="text-cyan-400/60">[14:21:45]</span> <span class="text-tertiary-fixed-dim">HEALTH_CHECK:</span> node-04 OK</p>
+<p class="text-slate-500"><span class="text-cyan-400/60">[14:19:30]</span> <span class="text-secondary">SSL_RENEWED:</span> *.api.ops.io</p>
+<p class="text-slate-500"><span class="text-cyan-400/60">[14:15:12]</span> <span class="text-error">DNS_TIMEOUT:</span> region-us-west-2 (retrying...)</p>
+<p class="text-slate-500"><span class="text-cyan-400/60">[14:14:01]</span> <span class="text-primary">DEPLOY_INIT:</span> artifact_v_4.12.0</p>
+<p class="text-slate-500"><span class="text-cyan-400/60">[14:12:45]</span> <span class="text-tertiary-fixed-dim">BACKUP_COMPLETE:</span> s3-storage-01</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Cloud Architecture -->
+<section class="space-y-6" id="architecture">
+<h2 class="font-headline-xl text-primary flex items-center gap-3">
+<span class="text-cyan-400 material-symbols-outlined text-4xl">hub</span>
+                CLOUD_INFRASTRUCTURE_DESIGN
+            </h2>
+<div class="glass-panel p-8 rounded min-h-[400px] flex items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+<!-- Architecture Diagram Simulation -->
+<div class="relative grid grid-cols-2 md:grid-cols-4 gap-xl w-full max-w-4xl">
+<!-- Connector Lines (SVG simplified for pure CSS/HTML) -->
+<div class="absolute inset-0 pointer-events-none opacity-20">
+<svg class="w-full h-full" viewbox="0 0 800 300">
+<path d="M100 150 L300 150 M500 150 L700 150" fill="none" stroke="#00f2ff" stroke-width="1"></path>
+<path d="M400 100 L400 50 M400 200 L400 250" fill="none" stroke="#00f2ff" stroke-width="1"></path>
+</svg>
+</div>
+<!-- Nodes -->
+<div class="flex flex-col items-center gap-3 group">
+<div class="w-20 h-20 glass-panel flex items-center justify-center rounded-xl border-cyan-400/40 group-hover:glow-cyan group-hover:scale-105 transition-all cursor-help relative">
+<span class="material-symbols-outlined text-3xl text-cyan-400">cloud_queue</span>
+<div class="absolute top-0 -right-2 bg-primary-container text-on-primary text-[8px] font-bold px-1 rounded">INGRESS</div>
+</div>
+<span class="font-label-caps text-[10px] text-slate-300">API GATEWAY</span>
+</div>
+<div class="flex flex-col items-center gap-3 group">
+<div class="w-20 h-20 glass-panel flex items-center justify-center rounded-xl border-secondary/40 group-hover:glow-cyan group-hover:scale-105 transition-all cursor-help">
+<span class="material-symbols-outlined text-3xl text-secondary">stackdriver</span>
+</div>
+<span class="font-label-caps text-[10px] text-slate-300">EKS CLUSTER</span>
+</div>
+<div class="flex flex-col items-center gap-3 group">
+<div class="w-20 h-20 glass-panel flex items-center justify-center rounded-xl border-tertiary-fixed-dim/40 group-hover:glow-cyan group-hover:scale-105 transition-all cursor-help">
+<span class="material-symbols-outlined text-3xl text-tertiary-fixed-dim">database</span>
+</div>
+<span class="font-label-caps text-[10px] text-slate-300">RDS AURORA</span>
+</div>
+<div class="flex flex-col items-center gap-3 group">
+<div class="w-20 h-20 glass-panel flex items-center justify-center rounded-xl border-primary/40 group-hover:glow-cyan group-hover:scale-105 transition-all cursor-help">
+<span class="material-symbols-outlined text-3xl text-primary">folder_shared</span>
+</div>
+<span class="font-label-caps text-[10px] text-slate-300">S3 STORAGE</span>
+</div>
+</div>
+<!-- Detail Overlay (Hover state simulation) -->
+<div class="absolute bottom-6 right-6 glass-panel p-4 rounded max-w-xs border-cyan-400/20">
+<p class="font-label-caps text-[10px] text-cyan-400 mb-2">NODE_DETAILS: EKS CLUSTER</p>
+<p class="text-slate-400 text-xs font-body-sm leading-relaxed">
+                        Highly available K8s control plane managing 48 worker nodes across 3 Availability Zones. Auto-scaled using Karpenter.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Section 3: Operations Pipeline -->
+<section class="space-y-6" id="pipeline">
+<h2 class="font-headline-xl text-primary flex items-center gap-3">
+<span class="text-cyan-400 material-symbols-outlined text-4xl">account_tree</span>
+                OPERATIONS_PIPELINE
+            </h2>
+<!-- Horizontal Pipeline Visualization -->
+<div class="glass-panel p-8 rounded-xl relative overflow-hidden">
+<div class="flex items-center justify-between gap-4">
+<div class="flex-1 flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-surface-container mb-2">
+<span class="material-symbols-outlined text-slate-400">code</span>
+</div>
+<p class="font-label-caps text-[10px] text-slate-500">GITHUB</p>
+<div class="mt-4 px-3 py-1 bg-tertiary-container/10 text-tertiary-container text-[8px] rounded-full border border-tertiary-container/20">COMMIT_RECV</div>
+</div>
+<div class="w-12 border-t-2 border-dashed border-white/10"></div>
+<div class="flex-1 flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-surface-container mb-2 relative">
+<span class="material-symbols-outlined text-cyan-400">play_circle</span>
+<div class="absolute -inset-1 rounded-full border border-cyan-400 animate-pulse"></div>
+</div>
+<p class="font-label-caps text-[10px] text-slate-500">ACTIONS</p>
+<div class="mt-4 px-3 py-1 bg-primary-container/10 text-primary-container text-[8px] rounded-full border border-primary-container/20">TESTING...</div>
+</div>
+<div class="w-12 border-t-2 border-dashed border-white/10"></div>
+<div class="flex-1 flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-surface-container mb-2">
+<span class="material-symbols-outlined text-slate-400">terminal</span>
+</div>
+<p class="font-label-caps text-[10px] text-slate-500">DOCKER</p>
+<div class="mt-4 px-3 py-1 bg-surface-container text-slate-500 text-[8px] rounded-full border border-white/10">QUEUED</div>
+</div>
+<div class="w-12 border-t-2 border-dashed border-white/10"></div>
+<div class="flex-1 flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-surface-container mb-2">
+<span class="material-symbols-outlined text-slate-400">rocket_launch</span>
+</div>
+<p class="font-label-caps text-[10px] text-slate-500">DEPLOY</p>
+<div class="mt-4 px-3 py-1 bg-surface-container text-slate-500 text-[8px] rounded-full border border-white/10">WAITING</div>
+</div>
+</div>
+</div>
+<!-- Project Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="glass-panel overflow-hidden rounded group">
+<div class="h-40 w-full relative">
+<img alt="Terraform Infrastructure" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" data-alt="Technical schematic showing cloud infrastructure automation as code with terraform syntax elements and network nodes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiCGfSWFqFkUYwbrg9yd2684jrRTMrCKbH1sk0X2fSY9Y988SuO6tLCV1XJ1RQRPWKbyh_89eUbuzGCAhcaOFsD6YmoQr-B1AGYhntG6dytxWg5j-4KcTjGn-TKuDZkWYBJApHQbmS7jzdZr7T80kqIwd9EjFuDtunGkQ5UOIb8ZDWn0dc1m_WMWCIG0YSHSf9ChTG9nbDS3ST2nBpvcjYUCkRQ1m6wwGgoHKsJaUBNie86kVltrvHZDiojnp1UPE4ginV0S6YdLY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="px-2 py-1 bg-cyan-400 text-on-primary text-[10px] font-label-caps rounded">INFRA_AS_CODE</span>
+</div>
+</div>
+<div class="p-6">
+<h4 class="font-headline-md text-primary mb-2">Project: Multi-Region Failover</h4>
+<p class="text-slate-400 text-sm mb-4">Automated DR strategy using Terraform and Route53 health checks across us-east-1 and eu-west-1.</p>
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono-data text-cyan-400">HCL</span>
+<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono-data text-cyan-400">AWS</span>
+</div>
+</div>
+</div>
+<div class="glass-panel overflow-hidden rounded group">
+<div class="h-40 w-full relative">
+<img alt="Kubernetes Security" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" data-alt="Complex 3D digital representation of a secure server cluster with glowing green nodes and data protective shield icons" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_fjgIDFUWZrzOzWwbFWXwl7Vr1sgk4_fyVcgRRzDk8Weyr0r8tPdadhXfD2pnHtm37uJMP2FmS8-2h40fWKSEykDTMqS-iiJC41AF9_pWq11iPqNHQ6-cQwzS3orRqkO56Bim5UMY67LCMpwKhC2bilKa8MZ0JX7ymSO6r2txz-TLnZbJP0Qp9cTOAqUbloNb2FU2Wz59YNGTf3PR5vlG-HsAt6W2PU4WFxWfse6woTClkKt4H6YbfQYz_nY6IK5wvaZCegfGMfY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="px-2 py-1 bg-secondary text-on-secondary text-[10px] font-label-caps rounded">SECURITY_HARDENING</span>
+</div>
+</div>
+<div class="p-6">
+<h4 class="font-headline-md text-primary mb-2">Zero-Trust Network Access</h4>
+<p class="text-slate-400 text-sm mb-4">Implementing Istio service mesh with mTLS and fine-grained RBAC for a fintech microservices architecture.</p>
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono-data text-cyan-400">ISTIO</span>
+<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono-data text-cyan-400">GO</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Career Log -->
+<section class="space-y-6 pb-12" id="career">
+<h2 class="font-headline-xl text-primary flex items-center gap-3">
+<span class="text-cyan-400 material-symbols-outlined text-4xl">history_edu</span>
+                CAREER LOG PERSISTENCE
+            </h2>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-gutter">
+<!-- Metrics Sidebar -->
+<div class="space-y-gutter">
+<div class="glass-panel p-6 rounded text-center">
+<p class="font-label-caps text-[10px] text-slate-500 mb-2">TOTAL UPTIME</p>
+<p class="text-3xl font-headline-xl text-tertiary-fixed-dim">3 YRS</p>
+</div>
+<div class="glass-panel p-6 rounded text-center">
+<p class="font-label-caps text-[10px] text-slate-500 mb-2">2026 CONTRIBUTIONS</p>
+<p class="text-3xl font-headline-xl text-primary" id="github-commit-count">--</p>
+<p class="font-mono-data text-[10px] text-slate-500 mt-2" id="github-commit-meta">Connecting to GitHub...</p>
+</div>
+<div class="glass-panel p-6 rounded text-center">
+<p class="font-label-caps text-[10px] text-slate-500 mb-2">CERTS HELD</p>
+<p class="text-3xl font-headline-xl text-secondary">06</p>
+</div>
+</div>
+<!-- Timeline -->
+<div class="lg:col-span-3 glass-panel p-8 rounded relative">
+<div class="absolute left-10 top-8 bottom-8 w-px bg-white/10"></div>
+<div class="space-y-12">
+<!-- Entry 1 -->
+<div class="relative pl-12 group">
+<div class="absolute left-[-5px] top-1 w-3 h-3 rounded-full bg-cyan-400 glow-cyan"></div>
+<div>
+<span class="font-mono-data text-xs text-cyan-400/60 block mb-1">PRESENT - 2026</span>
+<h3 class="font-headline-md text-primary">AI Research and Development Intern</h3>
+<p class="font-label-caps text-[10px] text-slate-500 mb-4 tracking-widest">Indian Council of Agricultural & Research</p>
+<ul class="space-y-2 text-slate-400 text-sm">
+<li class="flex gap-2"><span class="text-cyan-400">▹</span> Designed and built an autonomous rover system with AI/ML models for grape
+detection using computer vision. </li>
+<li class="flex gap-2"><span class="text-cyan-400">▹</span> Deployed models on cloud infrastructure for real-time inference, collaborating with a
+government research team to integrate hardware and software solutions. </li>
+</ul>
+</div>
+</div>
+<!-- Entry 2 -->
+<div class="relative pl-12 group">
+<div class="absolute left-[-4px] top-1 w-2 h-2 rounded-full bg-white/20"></div>
+<div>
+<span class="font-mono-data text-xs text-slate-500 block mb-1">2025</span>
+<h3 class="font-headline-md text-primary">GirlScript Summer of Code | GSSoC 25'</h3>
+<p class="font-label-caps text-[10px] text-slate-500 mb-4 tracking-widest">GirlScript Foundation</p>
+<ul class="space-y-2 text-slate-400 text-sm">
+<li class="flex gap-2"><span class="text-slate-600">▹</span> Contributing to open-source projects by developing features, fixing bugs, and
+collaborating with global contributors through GitHub</li>
+<li class="flex gap-2"><span class="text-slate-600">▹</span> Preparing to contribute to large scale projects in Python, AI/ML, and cloud-based
+development</li>
+</ul>
+</div>
+</div>
+<!-- Entry 3 -->
+<div class="relative pl-12 group">
+<div class="absolute left-[-4px] top-1 w-2 h-2 rounded-full bg-white/20"></div>
+<div>
+<span class="font-mono-data text-xs text-slate-500 block mb-1">2025</span>
+<h3 class="font-headline-md text-primary">Flight Computer Engineer Intern</h3>
+<p class="font-label-caps text-[10px] text-slate-500 mb-4 tracking-widest">Atal Incubation Center (AIC), MIT-ADT University</p>
+<ul class="space-y-2 text-slate-400 text-sm">
+<li class="flex gap-2"><span class="text-slate-600">▹</span> Developing flight computers and programmed bi-copter drones using STM32 boards
+to improve stability and control.</li>
+<li class="flex gap-2"><span class="text-slate-600">▹</span> Documented loT device integrations while collaborating in a startup ecosystem to
+research and prototype UAV technologies.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- System Console Footer -->
+<footer class="fixed bottom-0 w-full z-30 bg-[#0a0a0a]/90 backdrop-blur-md px-6 py-2 border-t border-white/5 flex justify-between items-center text-[10px] font-mono-data text-slate-600">
+<div class="flex gap-4">
+<span>LOC: 37.7749° N, 122.4194° W</span>
+<span>OS: PORTFOLIO_KERN_6.2.0</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="animate-pulse w-2 h-2 rounded-full bg-cyan-400"></span>
+<span>CONNECTION_SECURE</span>
+</div>
+</footer>
+</body></html>
