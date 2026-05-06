@@ -13,9 +13,9 @@
 </head>
 <body class="font-body-sm overflow-x-hidden">
 <!-- TopNavBar -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/10 shadow-[0_0_15px_rgba(0,242,255,0.1)]">
-<div class="flex items-center gap-6">
-<span class="text-cyan-400 font-bold tracking-widest text-lg font-headline-md">AWS Dashboard</span>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-3 md:px-6 h-14 md:h-16 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/10 shadow-[0_0_15px_rgba(0,242,255,0.1)]">
+<div class="flex items-center gap-3 md:gap-6 min-w-0">
+<span class="text-cyan-400 font-bold tracking-widest text-sm md:text-lg font-headline-md truncate">AWS Dashboard</span>
 <div class="hidden md:flex items-center gap-4 text-xs font-mono-data opacity-60">
 <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse" id="backend-status-dot"></span><span id="backend-status-text">SYSTEM:CHECKING...</span></span>
 <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">speed</span> <span id="backend-latency-text">LATENCY: -</span></span>
@@ -27,13 +27,21 @@
 <span class="material-symbols-outlined text-xs text-cyan-400 mr-2">terminal</span>
 <input class="bg-transparent border-none text-xs font-mono-data focus:ring-0 text-primary p-0 w-32" placeholder="EXEC_CMD..." type="text"/>
 </div>
-<div class="flex gap-2">
+<div class="hidden sm:flex gap-2">
 <button class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-cyan-400 transition-all"><span class="material-symbols-outlined">terminal</span></button>
 <button class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-cyan-400 transition-all"><span class="material-symbols-outlined">notifications</span></button>
 <button class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-cyan-400 transition-all"><span class="material-symbols-outlined">settings</span></button>
 </div>
 </div>
 </header>
+<nav class="md:hidden fixed top-14 left-0 right-0 z-45 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur-xl">
+<div class="mobile-quick-nav flex gap-2 overflow-x-auto px-3 py-2 text-[10px] font-label-caps tracking-widest uppercase text-slate-300">
+<a class="shrink-0 rounded border border-cyan-400/40 px-2.5 py-1.5 text-cyan-300" href="#system">System</a>
+<a class="shrink-0 rounded border border-white/15 px-2.5 py-1.5" href="#architecture">Architecture</a>
+<a class="shrink-0 rounded border border-white/15 px-2.5 py-1.5" href="#pipeline">Projects</a>
+<a class="shrink-0 rounded border border-white/15 px-2.5 py-1.5" href="#career">Experience</a>
+</div>
+</nav>
 <!-- SideNavBar -->
 <aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-6 z-40 bg-[#0a0a0a]/90 backdrop-blur-2xl border-r border-white/10 w-64 hidden md:flex">
 <div class="px-4 mb-6">
@@ -82,7 +90,7 @@
 </div>
 </aside>
 <!-- Main Canvas -->
-<main class="md:ml-64 pt-20 px-6 pb-20 space-y-12 relative" id="main-canvas">
+<main class="md:ml-64 pt-28 md:pt-20 px-3 md:px-6 pb-10 md:pb-20 space-y-8 md:space-y-12 relative" id="main-canvas">
 <div class="identity-backdrop" id="identity-backdrop"></div>
 <div class="identity-panel identity-main-panel" id="identity-panel">
 <div class="glass-panel identity-panel-card rounded-xl border border-cyan-400/25 p-4 md:p-6">
@@ -199,14 +207,14 @@ Send
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
 <!-- Telemetry Cards -->
-<div class="glass-panel p-6 rounded relative overflow-hidden group">
+<div class="glass-panel p-4 md:p-6 rounded relative overflow-hidden group">
 <div class="absolute inset-0 scanline opacity-10"></div>
 <div class="relative z-10">
 <div class="flex justify-between items-start mb-4">
 <span class="font-label-caps text-xs text-slate-400">CPU UTILIZATION</span>
 <span class="material-symbols-outlined text-cyan-400">memory</span>
 </div>
-<div class="text-4xl font-headline-xl text-primary mb-2" id="dashboard-cpu-value">-</div>
+<div class="text-3xl md:text-4xl font-headline-xl text-primary mb-2" id="dashboard-cpu-value">-</div>
 <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
 <div class="h-full bg-cyan-400 glow-cyan" id="dashboard-cpu-bar" style="width: 0%"></div>
 </div>
@@ -216,14 +224,14 @@ Send
 </div>
 </div>
 </div>
-<div class="glass-panel p-6 rounded relative overflow-hidden group">
+<div class="glass-panel p-4 md:p-6 rounded relative overflow-hidden group">
 <div class="absolute inset-0 scanline opacity-10"></div>
 <div class="relative z-10">
 <div class="flex justify-between items-start mb-4">
 <span class="font-label-caps text-xs text-slate-400">MEMORY USAGE</span>
 <span class="material-symbols-outlined text-cyan-400">database</span>
 </div>
-<div class="text-4xl font-headline-xl text-primary mb-2" id="dashboard-memory-value">-</div>
+<div class="text-3xl md:text-4xl font-headline-xl text-primary mb-2" id="dashboard-memory-value">-</div>
 <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
 <div class="h-full bg-secondary-container glow-cyan" id="dashboard-memory-bar" style="width: 0%"></div>
 </div>
@@ -233,14 +241,14 @@ Send
 </div>
 </div>
 </div>
-<div class="glass-panel p-6 rounded relative overflow-hidden group">
+<div class="glass-panel p-4 md:p-6 rounded relative overflow-hidden group">
 <div class="absolute inset-0 scanline opacity-10"></div>
 <div class="relative z-10">
 <div class="flex justify-between items-start mb-4">
 <span class="font-label-caps text-xs text-slate-400">REQUEST VOLUME</span>
 <span class="material-symbols-outlined text-cyan-400">swap_horiz</span>
 </div>
-<div class="text-4xl font-headline-xl text-primary mb-2"><span id="dashboard-request-value">-</span><span class="text-lg opacity-50">/sec</span></div>
+<div class="text-3xl md:text-4xl font-headline-xl text-primary mb-2"><span id="dashboard-request-value">-</span><span class="text-base md:text-lg opacity-50">/sec</span></div>
 <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
 <div class="h-full bg-primary-container glow-cyan" id="dashboard-request-bar" style="width: 0%"></div>
 </div>
@@ -253,7 +261,7 @@ Send
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
 <!-- Traffic Graph -->
-<div class="lg:col-span-2 glass-panel p-6 rounded relative min-h-[300px]">
+<div class="lg:col-span-2 glass-panel p-4 md:p-6 rounded relative min-h-[260px] md:min-h-[300px]">
 <div class="flex justify-between items-center mb-6">
 <h3 class="font-label-caps text-xs text-slate-400 uppercase tracking-widest">Network_Traffic_Inbound_Outbound</h3>
 <div class="flex gap-4 font-mono-data text-[10px]">
@@ -278,7 +286,7 @@ Send
 </div>
 </div>
 <!-- Orchestration Log -->
-<div class="glass-panel p-6 rounded relative flex flex-col">
+<div class="glass-panel p-4 md:p-6 rounded relative flex flex-col">
 <h3 class="font-label-caps text-xs text-slate-400 uppercase tracking-widest mb-4">AWS Dashboard Logs</h3>
 <div class="flex-1 font-mono-data text-[11px] space-y-2 overflow-y-auto max-h-[220px] pr-2">
 <p class="text-slate-500"><span class="text-cyan-400/60">[14:22:01]</span> <span class="text-primary">POD_SCALED:</span> worker-v2 (n+2)</p>
@@ -297,7 +305,7 @@ Send
 <span class="text-cyan-400 material-symbols-outlined text-4xl">hub</span>
                 CLOUD_INFRASTRUCTURE_DESIGN
             </h2>
-<div class="glass-panel p-8 rounded min-h-[400px] flex items-center justify-center relative overflow-hidden">
+<div class="glass-panel p-4 md:p-8 rounded min-h-[320px] md:min-h-[400px] flex items-center justify-center relative overflow-hidden">
 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
 <!-- Architecture Diagram Simulation -->
 <div class="relative grid grid-cols-2 md:grid-cols-4 gap-xl w-full max-w-4xl">
@@ -351,8 +359,9 @@ Send
                 OPERATIONS_PIPELINE
             </h2>
 <!-- Horizontal Pipeline Visualization -->
-<div class="glass-panel p-8 rounded-xl relative overflow-hidden">
-<div class="flex items-center justify-between gap-4">
+<div class="glass-panel p-4 md:p-8 rounded-xl relative overflow-hidden">
+<div class="overflow-x-auto">
+<div class="flex items-center justify-between gap-4 min-w-[640px]">
 <div class="flex-1 flex flex-col items-center">
 <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-surface-container mb-2">
 <span class="material-symbols-outlined text-slate-400">code</span>
@@ -384,6 +393,7 @@ Send
 </div>
 <p class="font-label-caps text-[10px] text-slate-500">DEPLOY</p>
 <div class="mt-4 px-3 py-1 bg-surface-container text-slate-500 text-[8px] rounded-full border border-white/10">WAITING</div>
+</div>
 </div>
 </div>
 </div>
@@ -449,7 +459,7 @@ Send
 </div>
 </div>
 <!-- Timeline -->
-<div class="lg:col-span-3 glass-panel p-8 rounded relative">
+<div class="lg:col-span-3 glass-panel p-4 md:p-8 rounded relative">
 <div class="absolute left-10 top-8 bottom-8 w-px bg-white/10"></div>
 <div class="space-y-12">
 <!-- Entry 1 -->
@@ -503,7 +513,7 @@ research and prototype UAV technologies.</li>
 </section>
 </main>
 <!-- System Console Footer -->
-<footer class="fixed bottom-0 w-full z-30 bg-[#0a0a0a]/90 backdrop-blur-md px-6 py-2 border-t border-white/5 flex justify-between items-center text-[10px] font-mono-data text-slate-600">
+<footer class="hidden md:flex fixed bottom-0 w-full z-30 bg-[#0a0a0a]/90 backdrop-blur-md px-6 py-2 border-t border-white/5 justify-between items-center text-[10px] font-mono-data text-slate-600">
 <div class="flex gap-4">
 <span>LOC: 37.7749° N, 122.4194° W</span>
 <span>OS: PORTFOLIO_KERN_6.2.0</span>

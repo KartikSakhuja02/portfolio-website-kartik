@@ -351,6 +351,23 @@ body.identity-expanded #career {
         max-height: calc(100vh - 96px);
     }
 
+    .identity-btn {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 12px 14px;
+        font-size: 12px;
+    }
+
+    .ai-chat-input {
+        min-height: 110px;
+        font-size: 13px;
+    }
+
+    .ai-chat-message {
+        max-width: 96%;
+        font-size: 13px;
+    }
+
     body.identity-expanded #system,
     body.identity-expanded #architecture,
     body.identity-expanded #pipeline,
@@ -380,4 +397,13 @@ body.identity-expanded #career {
 
 #open-to-work-toggle.active #open-to-work-icon {
     transform: scale(1.1);
+}
+
+.mobile-quick-nav {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.mobile-quick-nav::-webkit-scrollbar {
+    display: none;
 }
