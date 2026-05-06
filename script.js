@@ -602,6 +602,18 @@ function initializeIdentityPanel() {
 
   const mobileProfileBtn = document.getElementById("mobile-profile-btn");
 
+  if (mobileProfileBtn) {
+    console.log("✅ Mobile profile button found and setting up listener");
+    mobileProfileBtn.addEventListener("click", (e) => {
+      console.log("🎯 Mobile profile button clicked", e);
+      identityState.isExpanded = !identityState.isExpanded;
+      console.log("📱 Identity state toggled to:", identityState.isExpanded);
+      renderIdentityPanel();
+    });
+  } else {
+    console.warn("⚠️ Mobile profile button NOT found in DOM");
+  }
+
   toggle.addEventListener("pointerenter", () => {
     identityState.isPointerOnTrigger = true;
     openIdentityPanel();
