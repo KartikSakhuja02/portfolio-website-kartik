@@ -87,9 +87,8 @@ tailwind.config = {
   }
 };
 
-const isAdmin = true; // change manually for now
-const API_BASE_URL = "http://127.0.0.1:8000";
-const ADMIN_API_KEY = "kartikportfolio123";
+const isAdmin = window.localStorage.getItem("portfolio.isAdmin") === "true";
+const API_BASE_URL = window.PORTFOLIO_API_BASE_URL || window.location.origin;
 const REQUEST_TIMEOUT_MS = 8000;
 
 if (!isAdmin) {
@@ -862,6 +861,13 @@ function initializeOpenToWorkToggle() {
   toggleButton.addEventListener("click", async () => {
     const isCurrentlyActive = toggleButton.classList.contains("active");
     const newStatus = !isCurrentlyActive;
+    const adminKey = window.localStorage.getItem("portfolio.adminApiKey") || window.prompt("Enter admin key to update status:") || "";
+
+    if (!adminKey) {
+      return;
+    }
+
+    window.localStorage.setItem("portfolio.adminApiKey", adminKey);
 
     toggleButton.disabled = true;
     updateOpenToWorkUI(newStatus);
@@ -869,7 +875,7 @@ function initializeOpenToWorkToggle() {
     try {
       const response = await fetchWithTimeout(`${API_BASE_URL}/api/user-status`, {
         method: "POST",
-        headers: createJsonHeaders({ "x-admin-key": ADMIN_API_KEY }),
+        headers: createJsonHeaders({ "x-admin-key": adminKey }),
         body: JSON.stringify({ open_to_work: newStatus }),
       });
 
