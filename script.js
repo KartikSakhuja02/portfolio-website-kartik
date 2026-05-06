@@ -539,6 +539,7 @@ function renderIdentityPanel() {
     : "keyboard_arrow_down";
 
   document.body.classList.toggle("identity-expanded", identityState.isExpanded);
+  updateDebugIndicator();
 }
 
 function openIdentityPanel() {
@@ -607,21 +608,71 @@ function initializeIdentityPanel() {
     mobileProfileBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log("🎯 Mobile profile button clicked", e);
-      console.log("Current identity state:", JSON.stringify(identityState));
       identityState.isExpanded = !identityState.isExpanded;
       identityState.isPointerOnTrigger = false;
       identityState.isPointerOnPanel = false;
-      console.log("📱 Identity state toggled to:", identityState.isExpanded);
-      // Add immediate visual feedback
       mobileProfileBtn.style.color = identityState.isExpanded ? "#00dbe7" : "#cbd5e1";
-      // Call render immediately
       renderIdentityPanel();
-      console.log("Body classes:", document.body.className);
+      
+      // Debug: log to page
+      const panel = document.getElementById("identity-panel");
+      const hasClass = panel.classList.contains("is-open");
+      const backdrop = document.getElementById("identity-backdrop");
+      const bodyHasClass = document.body.classList.contains("identity-expanded");
+      console.log("🎯 Profile clicked | is-open:", hasClass, "body.identity-expanded:", bodyHasClass, "state:", identityState.isExpanded);
+      console.log("Panel display:", window.getComputedStyle(panel).display, "visibility:", window.getComputedStyle(panel).visibility, "opacity:", window.getComputedStyle(panel).opacity);
+      console.log("Panel position:", window.getComputedStyle(panel).position, "top:", window.getComputedStyle(panel).top, "z-index:", window.getComputedStyle(panel).zIndex);
+      
+      // Visual debug on page - show state in corner
+      updateDebugIndicator();
     });
   } else {
     console.warn("⚠️ Mobile profile button NOT found in DOM");
   }
+
+function updateDebugIndicator() {
+  const panel = document.getElementById("identity-panel");
+  const hasClass = panel?.classList.contains("is-open");
+  const backdrop = document.getElementById("identity-backdrop");
+  const bodyHasClass = document.body.classList.contains("identity-expanded");
+  
+  let indicator = document.getElementById("debug-indicator");
+  if (!indicator) {
+    indicator = document.createElement("div");
+    indicator.id = "debug-indicator";
+    indicator.style.cssText = "position: fixed; bottom: 10px; right: 10px; z-index: 99999; background: rgba(10, 10, 10, 0.95); border: 2px solid #00dbe7; padding: 8px 12px; border-radius: 4px; font-size: 10px; font-family: monospace; color: #00dbe7; max-width: 180px; line-height: 1.4;";
+    document.body.appendChild(indicator);
+  }
+  
+  const panelDisplay = panel ? window.getComputedStyle(panel).display : "N/A";
+  const panelVis = panel ? window.getComputedStyle(panel).visibility : "N/A";
+  const panelOpacity = panel ? window.getComputedStyle(panel).opacity : "N/A";
+  const panelTop = panel ? window.getComputedStyle(panel).top : "N/A";
+  const panelLeft = panel ? window.getComputedStyle(panel).left : "N/A";
+  const panelZindex = panel ? window.getComputedStyle(panel).zIndex : "N/A";
+  const panelWidth = panel ? panel.offsetWidth : "N/A";
+  const panelHeight = panel ? panel.offsetHeight : "N/A";
+  
+  let statusText = "";
+  if (hasClass && panelVis === "hidden") statusText = "⚠️ VISIBLE CLASS BUT HIDDEN CSS";
+  if (hasClass && panelOpacity === "0") statusText = "⚠️ VISIBLE CLASS BUT OPACITY 0";
+  if (hasClass && panelDisplay === "none") statusText = "⚠️ VISIBLE CLASS BUT DISPLAY NONE";
+  if (hasClass && panelHeight === "0") statusText = "⚠️ PANEL HAS ZERO HEIGHT";
+  
+  indicator.innerHTML = `
+    <div style="font-weight: bold; margin-bottom: 4px;">DEBUG STATE</div>
+    Panel is-open: <b>${hasClass ? "✓ YES" : "✗ NO"}</b><br/>
+    Body expanded: <b>${bodyHasClass ? "✓ YES" : "✗ NO"}</b><br/>
+    <hr style="border: none; border-top: 1px solid #00dbe7; margin: 4px 0;"/>
+    Opacity: <b>${panelOpacity}</b><br/>
+    Visibility: <b>${panelVis}</b><br/>
+    Display: <b>${panelDisplay}</b><br/>
+    Top: <b>${panelTop}</b> | Left: <b>${panelLeft}</b><br/>
+    Size: <b>${panelWidth}×${panelHeight}</b>px<br/>
+    Z-Index: <b>${panelZindex}</b><br/>
+    ${statusText ? `<div style="color: #ff6b6b; margin-top: 4px;">${statusText}</div>` : ""}
+  `;
+}
 
   toggle.addEventListener("pointerenter", () => {
     identityState.isPointerOnTrigger = true;
