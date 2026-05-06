@@ -91,6 +91,30 @@ const isAdmin = window.localStorage.getItem("portfolio.isAdmin") === "true";
 const API_BASE_URL = window.PORTFOLIO_API_BASE_URL || window.location.origin;
 const REQUEST_TIMEOUT_MS = 8000;
 
+// Create debug indicator immediately on script load
+function createPageLoadDebug() {
+  const indicator = document.createElement("div");
+  indicator.id = "page-load-debug";
+  indicator.style.cssText = "position: fixed; bottom: 50px; right: 10px; z-index: 99999; background: rgba(10, 10, 10, 0.98); border: 2px solid #ff3333; padding: 10px 12px; border-radius: 4px; font-size: 11px; font-family: monospace; color: #ff3333; max-width: 200px; line-height: 1.5; font-weight: bold;";
+  indicator.innerHTML = `
+    <div>🔴 SCRIPT LOADED</div>
+    <div style="font-size: 10px; color: #888; margin-top: 4px;">Waiting for DOM...</div>
+    <div style="font-size: 10px; color: #888;">Profile btn: <span id="btn-status">?</span></div>
+  `;
+  document.documentElement.appendChild(indicator);
+}
+
+// Show debug on page load
+setTimeout(() => {
+  createPageLoadDebug();
+  const btnStatus = document.getElementById("btn-status");
+  if (btnStatus) {
+    const btn = document.getElementById("mobile-profile-btn");
+    btnStatus.textContent = btn ? "✓ FOUND" : "✗ NOT FOUND";
+    btnStatus.style.color = btn ? "#00ff00" : "#ff3333";
+  }
+}, 100);
+
 if (!isAdmin) {
   const toggle = document.getElementById("open-to-work-toggle");
   if (toggle) {
@@ -633,14 +657,13 @@ function initializeIdentityPanel() {
 function updateDebugIndicator() {
   const panel = document.getElementById("identity-panel");
   const hasClass = panel?.classList.contains("is-open");
-  const backdrop = document.getElementById("identity-backdrop");
   const bodyHasClass = document.body.classList.contains("identity-expanded");
   
   let indicator = document.getElementById("debug-indicator");
   if (!indicator) {
     indicator = document.createElement("div");
     indicator.id = "debug-indicator";
-    indicator.style.cssText = "position: fixed; bottom: 10px; right: 10px; z-index: 99999; background: rgba(10, 10, 10, 0.95); border: 2px solid #00dbe7; padding: 8px 12px; border-radius: 4px; font-size: 10px; font-family: monospace; color: #00dbe7; max-width: 180px; line-height: 1.4;";
+    indicator.style.cssText = "position: fixed; bottom: 10px; right: 10px; z-index: 99999; background: rgba(10, 10, 10, 0.98); border: 2px solid #00ff00; padding: 10px 12px; border-radius: 4px; font-size: 11px; font-family: monospace; color: #00ff00; max-width: 200px; line-height: 1.5;";
     document.body.appendChild(indicator);
   }
   
@@ -648,29 +671,36 @@ function updateDebugIndicator() {
   const panelVis = panel ? window.getComputedStyle(panel).visibility : "N/A";
   const panelOpacity = panel ? window.getComputedStyle(panel).opacity : "N/A";
   const panelTop = panel ? window.getComputedStyle(panel).top : "N/A";
-  const panelLeft = panel ? window.getComputedStyle(panel).left : "N/A";
-  const panelZindex = panel ? window.getComputedStyle(panel).zIndex : "N/A";
-  const panelWidth = panel ? panel.offsetWidth : "N/A";
   const panelHeight = panel ? panel.offsetHeight : "N/A";
+  const panelWidth = panel ? panel.offsetWidth : "N/A";
   
-  let statusText = "";
-  if (hasClass && panelVis === "hidden") statusText = "⚠️ VISIBLE CLASS BUT HIDDEN CSS";
-  if (hasClass && panelOpacity === "0") statusText = "⚠️ VISIBLE CLASS BUT OPACITY 0";
-  if (hasClass && panelDisplay === "none") statusText = "⚠️ VISIBLE CLASS BUT DISPLAY NONE";
-  if (hasClass && panelHeight === "0") statusText = "⚠️ PANEL HAS ZERO HEIGHT";
+  let statusEmoji = "✓";
+  let statusColor = "#00ff00";
+  
+  if (!hasClass) {
+    statusEmoji = "✗";
+    statusColor = "#ffff00";
+  }
+  if (hasClass && panelHeight === "0") {
+    statusEmoji = "⚠️";
+    statusColor = "#ff6b6b";
+  }
+  
+  indicator.style.borderColor = statusColor;
+  indicator.style.color = statusColor;
   
   indicator.innerHTML = `
-    <div style="font-weight: bold; margin-bottom: 4px;">DEBUG STATE</div>
-    Panel is-open: <b>${hasClass ? "✓ YES" : "✗ NO"}</b><br/>
-    Body expanded: <b>${bodyHasClass ? "✓ YES" : "✗ NO"}</b><br/>
-    <hr style="border: none; border-top: 1px solid #00dbe7; margin: 4px 0;"/>
-    Opacity: <b>${panelOpacity}</b><br/>
-    Visibility: <b>${panelVis}</b><br/>
-    Display: <b>${panelDisplay}</b><br/>
-    Top: <b>${panelTop}</b> | Left: <b>${panelLeft}</b><br/>
-    Size: <b>${panelWidth}×${panelHeight}</b>px<br/>
-    Z-Index: <b>${panelZindex}</b><br/>
-    ${statusText ? `<div style="color: #ff6b6b; margin-top: 4px;">${statusText}</div>` : ""}
+    <div>${statusEmoji} PROFILE PANEL STATE</div>
+    <div style="margin-top: 6px;">
+      <div>is-open class: <b>${hasClass ? "YES" : "NO"}</b></div>
+      <div>Body expanded: <b>${bodyHasClass ? "YES" : "NO"}</b></div>
+      <div style="margin-top: 4px; border-top: 1px solid ${statusColor}; padding-top: 4px; font-size: 10px;">
+        Opacity: <b>${panelOpacity}</b><br/>
+        Visibility: <b>${panelVis}</b><br/>
+        Display: <b>${panelDisplay}</b><br/>
+        Size: <b>${panelWidth}×${panelHeight}</b>px
+      </div>
+    </div>
   `;
 }
 
