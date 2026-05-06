@@ -91,29 +91,7 @@ const isAdmin = window.localStorage.getItem("portfolio.isAdmin") === "true";
 const API_BASE_URL = window.PORTFOLIO_API_BASE_URL || window.location.origin;
 const REQUEST_TIMEOUT_MS = 8000;
 
-// Create debug indicator immediately on script load
-function createPageLoadDebug() {
-  const indicator = document.createElement("div");
-  indicator.id = "page-load-debug";
-  indicator.style.cssText = "position: fixed; bottom: 50px; right: 10px; z-index: 99999; background: rgba(10, 10, 10, 0.98); border: 2px solid #ff3333; padding: 10px 12px; border-radius: 4px; font-size: 11px; font-family: monospace; color: #ff3333; max-width: 200px; line-height: 1.5; font-weight: bold;";
-  indicator.innerHTML = `
-    <div>🔴 SCRIPT LOADED</div>
-    <div style="font-size: 10px; color: #888; margin-top: 4px;">Waiting for DOM...</div>
-    <div style="font-size: 10px; color: #888;">Profile btn: <span id="btn-status">?</span></div>
-  `;
-  document.documentElement.appendChild(indicator);
-}
-
-// Show debug on page load
-setTimeout(() => {
-  createPageLoadDebug();
-  const btnStatus = document.getElementById("btn-status");
-  if (btnStatus) {
-    const btn = document.getElementById("mobile-profile-btn");
-    btnStatus.textContent = btn ? "✓ FOUND" : "✗ NOT FOUND";
-    btnStatus.style.color = btn ? "#00ff00" : "#ff3333";
-  }
-}, 100);
+// (Removed temporary page-load debug UI)
 
 if (!isAdmin) {
   const toggle = document.getElementById("open-to-work-toggle");
@@ -697,43 +675,19 @@ function initializeIdentityPanel() {
   const mobileProfileBtn = document.getElementById("mobile-profile-btn");
 
   if (mobileProfileBtn) {
-    console.log("✅ Mobile profile button found and setting up listener");
     mobileProfileBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
-      
-      // DEBUG: Show click happened IMMEDIATELY
-      console.log("🔵 MOBILE BUTTON CLICKED!");
-      let clickDebug = document.getElementById("click-debug");
-      if (!clickDebug) {
-        clickDebug = document.createElement("div");
-        clickDebug.id = "click-debug";
-        clickDebug.style.cssText = "position: fixed; bottom: 10px; right: 10px; z-index: 99999; background: rgba(10, 10, 10, 0.98); border: 3px solid #00ff00; padding: 12px 14px; border-radius: 4px; font-size: 12px; font-family: monospace; color: #00ff00; max-width: 220px; line-height: 1.6; font-weight: bold;";
-        document.body.appendChild(clickDebug);
-      }
-      clickDebug.innerHTML = "🟢 BUTTON CLICKED!<br/>Toggling state...";
-      
-      // Toggle state
       identityState.isExpanded = !identityState.isExpanded;
       identityState.isPointerOnTrigger = false;
       identityState.isPointerOnPanel = false;
       mobileProfileBtn.style.color = identityState.isExpanded ? "#00dbe7" : "#cbd5e1";
-      
-      clickDebug.innerHTML += `<br/>State: ${identityState.isExpanded ? "OPEN" : "CLOSED"}`;
-      
       try {
-        console.log("Calling renderIdentityPanel()...");
         renderIdentityPanel();
-        clickDebug.innerHTML += `<br/>✓ renderIdentityPanel() OK`;
       } catch (err) {
-        console.error("ERROR in renderIdentityPanel:", err);
-        clickDebug.innerHTML += `<br/>✗ ERROR: ${err.message}`;
-        clickDebug.style.borderColor = "#ff0000";
-        clickDebug.style.color = "#ff0000";
+        console.error("renderIdentityPanel error:", err);
       }
     });
-  } else {
-    console.warn("⚠️ Mobile profile button NOT found in DOM");
   }
 
   toggle.addEventListener("pointerenter", () => {
