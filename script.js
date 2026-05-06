@@ -107,55 +107,7 @@ const identityState = {
   isPointerOnPanel: false,
 };
 
-// Define updateDebugIndicator globally so it can be called from anywhere
-function updateDebugIndicator() {
-  const panel = document.getElementById("identity-panel");
-  const hasClass = panel?.classList.contains("is-open");
-  const bodyHasClass = document.body.classList.contains("identity-expanded");
-  
-  let indicator = document.getElementById("debug-indicator");
-  if (!indicator) {
-    indicator = document.createElement("div");
-    indicator.id = "debug-indicator";
-    indicator.style.cssText = "position: fixed; bottom: 10px; right: 10px; z-index: 99999; background: rgba(10, 10, 10, 0.98); border: 2px solid #00ff00; padding: 10px 12px; border-radius: 4px; font-size: 11px; font-family: monospace; color: #00ff00; max-width: 200px; line-height: 1.5;";
-    document.body.appendChild(indicator);
-  }
-  
-  const panelDisplay = panel ? window.getComputedStyle(panel).display : "N/A";
-  const panelVis = panel ? window.getComputedStyle(panel).visibility : "N/A";
-  const panelOpacity = panel ? window.getComputedStyle(panel).opacity : "N/A";
-  const panelHeight = panel ? panel.offsetHeight : "N/A";
-  const panelWidth = panel ? panel.offsetWidth : "N/A";
-  
-  let statusEmoji = "✓";
-  let statusColor = "#00ff00";
-  
-  if (!hasClass) {
-    statusEmoji = "✗";
-    statusColor = "#ffff00";
-  }
-  if (hasClass && panelHeight === "0") {
-    statusEmoji = "⚠️";
-    statusColor = "#ff6b6b";
-  }
-  
-  indicator.style.borderColor = statusColor;
-  indicator.style.color = statusColor;
-  
-  indicator.innerHTML = `
-    <div>${statusEmoji} PROFILE PANEL STATE</div>
-    <div style="margin-top: 6px;">
-      <div>is-open class: <b>${hasClass ? "YES" : "NO"}</b></div>
-      <div>Body expanded: <b>${bodyHasClass ? "YES" : "NO"}</b></div>
-      <div style="margin-top: 4px; border-top: 1px solid ${statusColor}; padding-top: 4px; font-size: 10px;">
-        Opacity: <b>${panelOpacity}</b><br/>
-        Visibility: <b>${panelVis}</b><br/>
-        Display: <b>${panelDisplay}</b><br/>
-        Size: <b>${panelWidth}×${panelHeight}</b>px
-      </div>
-    </div>
-  `;
-}
+// debug indicator removed
 
 let identityCloseTimer = null;
 let telemetryTimer = null;
@@ -626,6 +578,11 @@ function openIdentityPanel() {
 
 function closeIdentityPanelWithDelay() {
   if (identityState.isPointerOnTrigger || identityState.isPointerOnPanel) {
+    return;
+  }
+
+  // Do not auto-close on small screens (mobile) to avoid closing when user scrolls
+  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
     return;
   }
 
