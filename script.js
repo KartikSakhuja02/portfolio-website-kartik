@@ -706,12 +706,7 @@ function initializeIdentityPanel() {
     closeIdentityPanelWithDelay();
   });
 
-  if (mobileProfileBtn) {
-    mobileProfileBtn.addEventListener("click", () => {
-      identityState.isExpanded = !identityState.isExpanded;
-      renderIdentityPanel();
-    });
-  }
+  // mobileProfileBtn listener attached above (avoid duplicate handlers)
 
   panel.addEventListener("pointerenter", () => {
     identityState.isPointerOnPanel = true;
