@@ -586,33 +586,52 @@ function initializeDashboardMetrics() {
 
 function renderIdentityPanel() {
   const panel = document.getElementById("identity-panel");
+  
+  // CRITICAL: Always apply the panel class, don't return early
+  if (!panel) {
+    console.error("❌ CRITICAL: identity-panel element not found!");
+    return;
+  }
+
+  // Apply the main toggle class (this is the most important thing)
+  panel.classList.toggle("is-open", identityState.isExpanded);
+  document.body.classList.toggle("identity-expanded", identityState.isExpanded);
+  
+  // Now handle optional sidebar elements that might not exist
   const toggle = document.getElementById("identity-hover-trigger");
   const chevron = document.getElementById("identity-chevron");
   const connectMenu = document.getElementById("connect-menu");
   const connectToggle = document.getElementById("connect-toggle");
   const connectChevron = document.getElementById("connect-chevron");
 
-  if (!panel || !toggle || !chevron || !connectMenu || !connectToggle || !connectChevron) {
-    return;
+  if (toggle) {
+    toggle.setAttribute("aria-expanded", String(identityState.isExpanded));
+  }
+  
+  if (chevron) {
+    chevron.textContent = identityState.isExpanded ? "chevron_left" : "chevron_right";
   }
 
-  panel.classList.toggle("is-open", identityState.isExpanded);
-  toggle.setAttribute("aria-expanded", String(identityState.isExpanded));
-  chevron.textContent = identityState.isExpanded ? "chevron_left" : "chevron_right";
+  if (connectMenu) {
+    connectMenu.classList.toggle(
+      "is-open",
+      identityState.isExpanded && identityState.isConnectOpen,
+    );
+  }
+  
+  if (connectToggle) {
+    connectToggle.setAttribute(
+      "aria-expanded",
+      String(identityState.isExpanded && identityState.isConnectOpen),
+    );
+  }
+  
+  if (connectChevron) {
+    connectChevron.textContent = identityState.isConnectOpen
+      ? "keyboard_arrow_up"
+      : "keyboard_arrow_down";
+  }
 
-  connectMenu.classList.toggle(
-    "is-open",
-    identityState.isExpanded && identityState.isConnectOpen,
-  );
-  connectToggle.setAttribute(
-    "aria-expanded",
-    String(identityState.isExpanded && identityState.isConnectOpen),
-  );
-  connectChevron.textContent = identityState.isConnectOpen
-    ? "keyboard_arrow_up"
-    : "keyboard_arrow_down";
-
-  document.body.classList.toggle("identity-expanded", identityState.isExpanded);
   updateDebugIndicator();
 }
 
