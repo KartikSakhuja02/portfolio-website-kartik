@@ -605,10 +605,19 @@ function initializeIdentityPanel() {
   if (mobileProfileBtn) {
     console.log("✅ Mobile profile button found and setting up listener");
     mobileProfileBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
       console.log("🎯 Mobile profile button clicked", e);
+      console.log("Current identity state:", JSON.stringify(identityState));
       identityState.isExpanded = !identityState.isExpanded;
+      identityState.isPointerOnTrigger = false;
+      identityState.isPointerOnPanel = false;
       console.log("📱 Identity state toggled to:", identityState.isExpanded);
+      // Add immediate visual feedback
+      mobileProfileBtn.style.color = identityState.isExpanded ? "#00dbe7" : "#cbd5e1";
+      // Call render immediately
       renderIdentityPanel();
+      console.log("Body classes:", document.body.className);
     });
   } else {
     console.warn("⚠️ Mobile profile button NOT found in DOM");
