@@ -600,6 +600,8 @@ function initializeIdentityPanel() {
     return;
   }
 
+  const mobileProfileBtn = document.getElementById("mobile-profile-btn");
+
   toggle.addEventListener("pointerenter", () => {
     identityState.isPointerOnTrigger = true;
     openIdentityPanel();
@@ -615,6 +617,13 @@ function initializeIdentityPanel() {
     identityState.isPointerOnTrigger = false;
     closeIdentityPanelWithDelay();
   });
+
+  if (mobileProfileBtn) {
+    mobileProfileBtn.addEventListener("click", () => {
+      identityState.isExpanded = !identityState.isExpanded;
+      renderIdentityPanel();
+    });
+  }
 
   panel.addEventListener("pointerenter", () => {
     identityState.isPointerOnPanel = true;
