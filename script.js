@@ -632,23 +632,36 @@ function initializeIdentityPanel() {
     mobileProfileBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
+      
+      // DEBUG: Show click happened IMMEDIATELY
+      console.log("🔵 MOBILE BUTTON CLICKED!");
+      let clickDebug = document.getElementById("click-debug");
+      if (!clickDebug) {
+        clickDebug = document.createElement("div");
+        clickDebug.id = "click-debug";
+        clickDebug.style.cssText = "position: fixed; bottom: 10px; right: 10px; z-index: 99999; background: rgba(10, 10, 10, 0.98); border: 3px solid #00ff00; padding: 12px 14px; border-radius: 4px; font-size: 12px; font-family: monospace; color: #00ff00; max-width: 220px; line-height: 1.6; font-weight: bold;";
+        document.body.appendChild(clickDebug);
+      }
+      clickDebug.innerHTML = "🟢 BUTTON CLICKED!<br/>Toggling state...";
+      
+      // Toggle state
       identityState.isExpanded = !identityState.isExpanded;
       identityState.isPointerOnTrigger = false;
       identityState.isPointerOnPanel = false;
       mobileProfileBtn.style.color = identityState.isExpanded ? "#00dbe7" : "#cbd5e1";
-      renderIdentityPanel();
       
-      // Debug: log to page
-      const panel = document.getElementById("identity-panel");
-      const hasClass = panel.classList.contains("is-open");
-      const backdrop = document.getElementById("identity-backdrop");
-      const bodyHasClass = document.body.classList.contains("identity-expanded");
-      console.log("🎯 Profile clicked | is-open:", hasClass, "body.identity-expanded:", bodyHasClass, "state:", identityState.isExpanded);
-      console.log("Panel display:", window.getComputedStyle(panel).display, "visibility:", window.getComputedStyle(panel).visibility, "opacity:", window.getComputedStyle(panel).opacity);
-      console.log("Panel position:", window.getComputedStyle(panel).position, "top:", window.getComputedStyle(panel).top, "z-index:", window.getComputedStyle(panel).zIndex);
+      clickDebug.innerHTML += `<br/>State: ${identityState.isExpanded ? "OPEN" : "CLOSED"}`;
       
-      // Visual debug on page - show state in corner
-      updateDebugIndicator();
+      try {
+        console.log("Calling renderIdentityPanel()...");
+        renderIdentityPanel();
+        clickDebug.innerHTML += `<br/>✓ renderIdentityPanel() OK`;
+      } catch (err) {
+        console.error("ERROR in renderIdentityPanel:", err);
+        clickDebug.innerHTML += `<br/>✗ ERROR: ${err.message}`;
+        clickDebug.style.borderColor = "#ff0000";
+        clickDebug.style.color = "#ff0000";
+      }
     });
   } else {
     console.warn("⚠️ Mobile profile button NOT found in DOM");
