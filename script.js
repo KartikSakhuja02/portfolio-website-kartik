@@ -562,7 +562,6 @@ function renderIdentityPanel() {
       : "keyboard_arrow_down";
   }
 
-  updateDebugIndicator();
 }
 
 function openIdentityPanel() {
