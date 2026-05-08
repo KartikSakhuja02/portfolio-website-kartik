@@ -91,8 +91,6 @@ const isAdmin = window.localStorage.getItem("portfolio.isAdmin") === "true";
 const API_BASE_URL = window.PORTFOLIO_API_BASE_URL || window.location.origin;
 const REQUEST_TIMEOUT_MS = 8000;
 
-// (Removed temporary page-load debug UI)
-
 if (!isAdmin) {
   const toggle = document.getElementById("open-to-work-toggle");
   if (toggle) {
@@ -106,8 +104,6 @@ const identityState = {
   isPointerOnTrigger: false,
   isPointerOnPanel: false,
 };
-
-// debug indicator removed
 
 let identityCloseTimer = null;
 let telemetryTimer = null;
@@ -131,6 +127,39 @@ function fetchWithTimeout(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
   const id = window.setTimeout(() => controller.abort(), timeoutMs);
   return fetch(url, Object.assign({}, options, { signal: controller.signal }))
     .finally(() => window.clearTimeout(id));
+}
+
+function createVisibilityAwareInterval(refreshFn, intervalMs) {
+  let intervalId = null;
+
+  const start = () => {
+    if (!intervalId) {
+      intervalId = window.setInterval(refreshFn, intervalMs);
+    }
+  };
+
+  const stop = () => {
+    if (intervalId) {
+      window.clearInterval(intervalId);
+      intervalId = null;
+    }
+  };
+
+  refreshFn();
+  start();
+
+  const onVisibilityChange = () => {
+    if (document.hidden) {
+      stop();
+    } else {
+      refreshFn();
+      start();
+    }
+  };
+
+  document.addEventListener("visibilitychange", onVisibilityChange);
+
+  return { stop };
 }
 
 
@@ -859,11 +888,10 @@ function initializeIdentityPanel() {
     }
   });
 
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", ({ target }) => {
     if (!identityState.isExpanded) {
       return;
     }
-    const target = event.target;
     if (!(target instanceof Element)) {
       return;
     }
@@ -942,8 +970,7 @@ function initializeOpenToWorkToggle() {
     }
   });
 
-  fetchOpenToWorkStatus();
-  window.setInterval(fetchOpenToWorkStatus, 60000);
+  createVisibilityAwareInterval(fetchOpenToWorkStatus, 60000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
