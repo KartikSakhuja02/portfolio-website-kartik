@@ -495,27 +495,29 @@ function initializeDashboardMetrics() {
       cpuStatus.className = `text-${cpuStatusClass.split("-").pop()} ${cpuStatusClass}`;
       cpuStatus.textContent = getStatusText(cpuVal, { warning: 60, critical: 85 });
 
-      // Update Memory metrics - note: bytes typically come in MBs from network metrics
-      const memBytesIn = data.network_metrics?.inbound_bytes || 0;
-      const memBytesOut = data.network_metrics?.outbound_bytes || 0;
-      const totalMemBytes = memBytesIn + memBytesOut;
-      const memPercentage = Math.min((totalMemBytes / (16 * 1024 * 1024 * 1024)) * 100, 100);
-      memoryValue.textContent = formatBytes(totalMemBytes);
-      memoryBar.style.width = `${memPercentage}%`;
-      memoryLimit.textContent = `LIMIT: 16.0 GB`;
+      // Update Memory metrics from the instance runtime
+      const memoryMetrics = data.memory_metrics || {};
+      const totalMemBytes = memoryMetrics.total_bytes || 0;
+      const memPercentage = memoryMetrics.percent_used || 0;
+      const usedMemBytes = memoryMetrics.used_bytes || 0;
+      const hasMemoryData = memoryMetrics.used_bytes !== null && memoryMetrics.used_bytes !== undefined;
+      memoryValue.textContent = hasMemoryData ? formatBytes(usedMemBytes) : "-";
+      memoryBar.style.width = hasMemoryData ? `${memPercentage}%` : "0%";
+      memoryLimit.textContent = totalMemBytes ? `LIMIT: ${formatBytes(totalMemBytes)}` : "LIMIT: -";
       const memStatusClass = getStatusColor(memPercentage, { warning: 70, critical: 85 });
       memoryStatus.className = memStatusClass;
-      memoryStatus.textContent = getStatusText(memPercentage, { warning: 70, critical: 85 });
+      memoryStatus.textContent = hasMemoryData ? getStatusText(memPercentage, { warning: 70, critical: 85 }) : "UNKNOWN";
 
       // Update Request metrics
-      const requestVal = data.request_metrics?.requests_per_second || 0;
+      const requestMetrics = data.request_metrics || {};
+      const requestVal = requestMetrics.requests_per_second || 0;
       requestValue.textContent = formatRequestCount(requestVal);
       const requestPercentage = Math.min((requestVal / 12) * 100, 100);
       requestBar.style.width = `${requestPercentage}%`;
       requestPeak.textContent = `PEAK: 12.0k`;
       const reqStatusClass = requestPercentage > 75 ? "text-primary" : "text-tertiary-container";
       requestStatus.className = reqStatusClass;
-      requestStatus.textContent = requestPercentage > 75 ? "INCREASING" : "NORMAL";
+      requestStatus.textContent = requestMetrics.source === "cloudwatch" ? "ALB" : "REALTIME";
     } catch (error) {
       console.error("Dashboard metrics fetch failed", error);
       cpuValue.textContent = "-";
@@ -541,6 +543,78 @@ function initializeDashboardMetrics() {
       dashboardMetricsTimer = window.setInterval(refreshDashboardMetrics, REFRESH_INTERVAL_MS);
     }
   });
+}
+
+function initializeEc2Logs() {
+  const logsList = document.getElementById("ec2-logs-list");
+  const logsMeta = document.getElementById("ec2-logs-meta");
+
+  if (!logsList || !logsMeta) {
+    return;
+  }
+
+  let isRefreshing = false;
+  const REFRESH_INTERVAL_MS = 30000;
+
+  function renderLogs(entries, updatedAt) {
+    logsList.innerHTML = "";
+
+    if (!entries || entries.length === 0) {
+      logsList.innerHTML = '<p class="text-slate-500">No recent EC2 logs yet.</p>';
+      logsMeta.textContent = `Updated ${new Date(updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+      return;
+    }
+
+    entries.slice().reverse().forEach((entry) => {
+      const row = document.createElement("p");
+      const sourceClass = entry.source === "app" ? "text-primary" : "text-tertiary-fixed-dim";
+      row.className = "text-slate-500 break-words";
+
+      const timeStamp = document.createElement("span");
+      timeStamp.className = "text-cyan-400/60";
+      timeStamp.textContent = `[${new Date(entry.timestamp || updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}]`;
+
+      const sourceLabel = document.createElement("span");
+      sourceLabel.className = sourceClass;
+      sourceLabel.textContent = `${(entry.source || "host").toUpperCase()}:`;
+
+      const message = document.createElement("span");
+      message.textContent = ` ${entry.message}`;
+
+      row.appendChild(timeStamp);
+      row.appendChild(document.createTextNode(" "));
+      row.appendChild(sourceLabel);
+      row.appendChild(message);
+      logsList.appendChild(row);
+    });
+
+    logsMeta.textContent = `Updated ${new Date(updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+  }
+
+  async function refreshLogs() {
+    if (isRefreshing || document.hidden) {
+      return;
+    }
+    isRefreshing = true;
+    try {
+      const response = await fetchWithTimeout(`${API_BASE_URL}/api/ec2-logs?limit=8`, {
+        cache: "no-store",
+      });
+      if (!response.ok) {
+        throw new Error(`EC2 logs request failed with status ${response.status}`);
+      }
+      const data = await response.json();
+      renderLogs(data.entries || [], data.updated_at || new Date().toISOString());
+    } catch (error) {
+      console.error("EC2 logs fetch failed", error);
+      logsList.innerHTML = '<p class="text-slate-500">Unable to load EC2 logs right now.</p>';
+      logsMeta.textContent = "Logs unavailable";
+    } finally {
+      isRefreshing = false;
+    }
+  }
+
+  createVisibilityAwareInterval(refreshLogs, REFRESH_INTERVAL_MS);
 }
 
 function renderIdentityPanel() {
@@ -978,6 +1052,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeGitHubCommitCounter();
   initializeAwsConnectionStatus();
   initializeDashboardMetrics();
+  initializeEc2Logs();
   initializeIdentityPanel();
   initializeOpenToWorkToggle();
 });

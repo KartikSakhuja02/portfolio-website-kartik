@@ -14,10 +14,11 @@ from sqlalchemy.orm import Session
 from .config import get_settings
 from .database import Base, SessionLocal, engine, get_db
 from .models import ResumeDocument, UserStatus
-from .schemas import AskRequest, AskResponse, AwsStatusResponse, DashboardMetricsResponse, GitHubStatsResponse, HealthResponse, ResumeStatusResponse, ResumeUploadResponse, UserStatusResponse, UserStatusUpdateRequest
+from .schemas import AskRequest, AskResponse, AwsStatusResponse, DashboardMetricsResponse, Ec2LogsResponse, GitHubStatsResponse, HealthResponse, ResumeStatusResponse, ResumeUploadResponse, UserStatusResponse, UserStatusUpdateRequest
 from .services.ai import generate_about_answer
 from .services.resume import extract_text_from_upload, replace_active_resume, seed_default_resume
 from .services.cloudwatch import get_all_dashboard_metrics
+from .services.runtime_metrics import get_ec2_logs, record_request_event
 from .dependencies import verify_admin
 
 
@@ -66,9 +67,12 @@ async def log_requests(request: Request, call_next) -> Response:
         response = await call_next(request)
     except Exception:
         logger.exception("request_failed method=%s path=%s", request.method, request.url.path)
+        elapsed_ms = (time.perf_counter() - started_at) * 1000
+        record_request_event(request.method, request.url.path, 500, elapsed_ms, request.url.query)
         raise
 
     elapsed_ms = (time.perf_counter() - started_at) * 1000
+    record_request_event(request.method, request.url.path, response.status_code, elapsed_ms, request.url.query)
     logger.info(
         "request_finished method=%s path=%s status=%s duration_ms=%.1f",
         request.method,
@@ -179,6 +183,13 @@ def get_dashboard_metrics() -> DashboardMetricsResponse:
     )
     logger.info("dashboard_metrics_fetched", extra={"metrics": str(metrics)})
     return DashboardMetricsResponse(**metrics)
+
+
+@app.get("/api/ec2-logs", response_model=Ec2LogsResponse)
+def get_ec2_logs_endpoint(limit: int = 12) -> Ec2LogsResponse:
+    """Return recent EC2 host/app log entries for the dashboard."""
+    safe_limit = max(1, min(limit, 40))
+    return Ec2LogsResponse(**get_ec2_logs(limit=safe_limit))
 
 
 @app.post("/api/resume/upload")

@@ -77,11 +77,34 @@ class RequestMetrics(BaseModel):
     requests_per_second: float | None = None
     unit: str
     timestamp: datetime | None = None
+    source: str | None = None
     error: str | None = None
+
+
+class MemoryMetrics(BaseModel):
+    total_bytes: float | None = None
+    used_bytes: float | None = None
+    available_bytes: float | None = None
+    percent_used: float | None = None
+    unit: str
+    timestamp: datetime | None = None
+    error: str | None = None
+
+
+class Ec2LogEntry(BaseModel):
+    source: str
+    message: str
+    timestamp: datetime | None = None
+
+
+class Ec2LogsResponse(BaseModel):
+    entries: list[Ec2LogEntry]
+    updated_at: datetime
 
 
 class DashboardMetricsResponse(BaseModel):
     cpu_utilization: MetricValue
+    memory_metrics: MemoryMetrics
     network_metrics: NetworkMetrics
     request_metrics: RequestMetrics
     timestamp: datetime

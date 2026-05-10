@@ -27,6 +27,8 @@ services:
       - .env
     environment:
       DATABASE_URL: postgresql+psycopg://portfolio:portfolio@db:5432/portfolio_ai
+    volumes:
+      - ${HOST_LOG_DIR:-./host-logs}:/host-logs:ro
     ports:
       - "8000:8000"
     depends_on:

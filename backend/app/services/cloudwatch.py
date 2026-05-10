@@ -5,6 +5,7 @@ import boto3
 from botocore.exceptions import BotoCoreError, ClientError, NoCredentialsError
 
 from ..config import get_settings
+from .runtime_metrics import get_memory_usage, get_request_volume
 
 logger = logging.getLogger("portfolio.cloudwatch")
 settings = get_settings()
@@ -121,8 +122,10 @@ def get_request_count_metric(
 ) -> dict:
     """Fetch ALB/ELB request count from CloudWatch."""
     client = get_cloudwatch_client()
-    if not client:
-        return {"request_count": None, "unit": "count", "error": "CloudWatch not available"}
+    if not client or not load_balancer_name:
+        request_volume = get_request_volume(window_seconds=60)
+        request_volume["source"] = "runtime"
+        return request_volume
 
     try:
         end_time = datetime.now(timezone.utc)
@@ -148,24 +151,31 @@ def get_request_count_metric(
                 "requests_per_second": round(requests_per_sec, 1),
                 "unit": "count",
                 "timestamp": end_time,
+                "source": "cloudwatch",
                 "error": None,
             }
-        return {
-            "request_count": 0,
-            "requests_per_second": 0,
-            "unit": "count",
-            "timestamp": end_time,
-            "error": None,
-        }
+        request_volume = get_request_volume(window_seconds=60)
+        request_volume["source"] = "runtime"
+        request_volume["error"] = None
+        return request_volume
     except (ClientError, BotoCoreError) as exc:
         logger.warning("Failed to fetch request count metric: %s", exc)
-        return {"request_count": None, "requests_per_second": None, "unit": "count", "error": str(exc)}
+        request_volume = get_request_volume(window_seconds=60)
+        request_volume["source"] = "runtime"
+        request_volume["error"] = str(exc)
+        return request_volume
+
+
+def get_memory_metrics() -> dict:
+    """Fetch EC2 memory usage from the host runtime."""
+    return get_memory_usage()
 
 
 def get_all_dashboard_metrics(instance_id: str | None = None, load_balancer_name: str | None = None) -> dict:
     """Fetch all dashboard metrics in one call."""
     return {
         "cpu_utilization": get_ec2_cpu_utilization(instance_id),
+        "memory_metrics": get_memory_metrics(),
         "network_metrics": get_network_metrics(instance_id),
         "request_metrics": get_request_count_metric(load_balancer_name),
         "timestamp": datetime.now(timezone.utc),

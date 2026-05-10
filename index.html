@@ -288,14 +288,12 @@ Send
 </div>
 <!-- Orchestration Log -->
 <div class="glass-panel p-4 md:p-6 rounded relative flex flex-col">
-<h3 class="font-label-caps text-xs text-slate-400 uppercase tracking-widest mb-4">AWS Dashboard Logs</h3>
-<div class="flex-1 font-mono-data text-[11px] space-y-2 overflow-y-auto max-h-[220px] pr-2">
-<p class="text-slate-500"><span class="text-cyan-400/60">[14:22:01]</span> <span class="text-primary">POD_SCALED:</span> worker-v2 (n+2)</p>
-<p class="text-slate-500"><span class="text-cyan-400/60">[14:21:45]</span> <span class="text-tertiary-fixed-dim">HEALTH_CHECK:</span> node-04 OK</p>
-<p class="text-slate-500"><span class="text-cyan-400/60">[14:19:30]</span> <span class="text-secondary">SSL_RENEWED:</span> *.api.ops.io</p>
-<p class="text-slate-500"><span class="text-cyan-400/60">[14:15:12]</span> <span class="text-error">DNS_TIMEOUT:</span> region-us-west-2 (retrying...)</p>
-<p class="text-slate-500"><span class="text-cyan-400/60">[14:14:01]</span> <span class="text-primary">DEPLOY_INIT:</span> artifact_v_4.12.0</p>
-<p class="text-slate-500"><span class="text-cyan-400/60">[14:12:45]</span> <span class="text-tertiary-fixed-dim">BACKUP_COMPLETE:</span> s3-storage-01</p>
+<div class="flex items-center justify-between gap-4 mb-4">
+<h3 class="font-label-caps text-xs text-slate-400 uppercase tracking-widest">AWS Dashboard Logs</h3>
+<span class="font-mono-data text-[10px] text-cyan-400/80" id="ec2-logs-meta">Updating...</span>
+</div>
+<div class="flex-1 font-mono-data text-[11px] space-y-2 overflow-y-auto max-h-[220px] pr-2" id="ec2-logs-list">
+<p class="text-slate-500">Loading EC2 logs...</p>
 </div>
 </div>
 </div>
