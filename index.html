@@ -264,26 +264,23 @@ Send
 <!-- Traffic Graph -->
 <div class="lg:col-span-2 glass-panel p-4 md:p-6 rounded relative min-h-[260px] md:min-h-[300px]">
 <div class="flex justify-between items-center mb-6">
-<h3 class="font-label-caps text-xs text-slate-400 uppercase tracking-widest">Network_Traffic_Inbound_Outbound</h3>
+<h3 class="font-label-caps text-xs text-slate-400 uppercase tracking-widest">Website_Traffic_Requests</h3>
 <div class="flex gap-4 font-mono-data text-[10px]">
-<span class="flex items-center gap-1"><span class="w-2 h-2 bg-cyan-400 rounded-full"></span> IN</span>
-<span class="flex items-center gap-1"><span class="w-2 h-2 bg-secondary rounded-full"></span> OUT</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-cyan-400 rounded-full"></span> REQUESTS</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-secondary rounded-full"></span> PEAK</span>
 </div>
 </div>
-<div class="h-48 w-full relative flex items-end justify-between px-2 gap-1">
-<!-- Simulated Sparkline/Bar Chart -->
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[40%] rounded-t-sm relative group">
-<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-surface-container p-1 rounded text-[8px] border border-white/10">1.2GB</div>
-</div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[65%] rounded-t-sm"></div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[45%] rounded-t-sm"></div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[85%] rounded-t-sm"></div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[95%] rounded-t-sm"></div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[70%] rounded-t-sm"></div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[55%] rounded-t-sm"></div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[60%] rounded-t-sm"></div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[40%] rounded-t-sm"></div>
-<div class="flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors h-[30%] rounded-t-sm"></div>
+<div class="h-48 w-full relative flex items-end justify-between px-2 gap-1" id="traffic-bars">
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
+<div class="flex-1 bg-cyan-400/20 rounded-t-sm"></div>
 </div>
 </div>
 <!-- Orchestration Log -->

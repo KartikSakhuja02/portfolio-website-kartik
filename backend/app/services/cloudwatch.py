@@ -5,7 +5,7 @@ import boto3
 from botocore.exceptions import BotoCoreError, ClientError, NoCredentialsError
 
 from ..config import get_settings
-from .runtime_metrics import get_memory_usage, get_request_volume
+from .runtime_metrics import get_memory_usage, get_request_traffic_history, get_request_volume
 
 logger = logging.getLogger("portfolio.cloudwatch")
 settings = get_settings()
@@ -21,6 +21,29 @@ def get_cloudwatch_client():
         return None
 
 
+def _metric_time_window(period_minutes: int) -> tuple[datetime, datetime]:
+    end_time = datetime.now(timezone.utc)
+    start_time = end_time - timedelta(minutes=period_minutes)
+    return start_time, end_time
+
+
+def _get_metric_statistics(client, *, namespace: str, metric_name: str, dimensions: list[dict], period_minutes: int, period: int, statistics: list[str], unit: str | None = None):
+    start_time, end_time = _metric_time_window(period_minutes)
+    query = {
+        "Namespace": namespace,
+        "MetricName": metric_name,
+        "Dimensions": dimensions,
+        "StartTime": start_time,
+        "EndTime": end_time,
+        "Period": period,
+        "Statistics": statistics,
+    }
+    if unit is not None:
+        query["Unit"] = unit
+
+    return client.get_metric_statistics(**query), end_time
+
+
 def get_ec2_cpu_utilization(instance_id: str | None = None, period_minutes: int = 5) -> dict:
     """Fetch EC2 CPU utilization from CloudWatch."""
     client = get_cloudwatch_client()
@@ -28,20 +51,15 @@ def get_ec2_cpu_utilization(instance_id: str | None = None, period_minutes: int 
         return {"value": None, "unit": "%", "error": "CloudWatch not available"}
 
     try:
-        end_time = datetime.now(timezone.utc)
-        start_time = end_time - timedelta(minutes=period_minutes)
-
-        response = client.get_metric_statistics(
-            Namespace="AWS/EC2",
-            MetricName="CPUUtilization",
-            Dimensions=[
-                {"Name": "InstanceId", "Value": instance_id or "i-demo"}
-            ] if instance_id else [],
-            StartTime=start_time,
-            EndTime=end_time,
-            Period=300,
-            Statistics=["Average"],
-            Unit="Percent",
+        response, end_time = _get_metric_statistics(
+            client,
+            namespace="AWS/EC2",
+            metric_name="CPUUtilization",
+            dimensions=[{"Name": "InstanceId", "Value": instance_id or "i-demo"}] if instance_id else [],
+            period_minutes=period_minutes,
+            period=300,
+            statistics=["Average"],
+            unit="Percent",
         )
 
         if response.get("Datapoints"):
@@ -71,9 +89,6 @@ def get_network_metrics(instance_id: str | None = None, period_minutes: int = 5)
         }
 
     try:
-        end_time = datetime.now(timezone.utc)
-        start_time = end_time - timedelta(minutes=period_minutes)
-
         metrics = {
             "NetworkIn": "inbound_bytes",
             "NetworkOut": "outbound_bytes",
@@ -84,16 +99,14 @@ def get_network_metrics(instance_id: str | None = None, period_minutes: int = 5)
 
         for metric_name, key in metrics.items():
             try:
-                response = client.get_metric_statistics(
-                    Namespace="AWS/EC2",
-                    MetricName=metric_name,
-                    Dimensions=[
-                        {"Name": "InstanceId", "Value": instance_id or "i-demo"}
-                    ] if instance_id else [],
-                    StartTime=start_time,
-                    EndTime=end_time,
-                    Period=300,
-                    Statistics=["Sum"],
+                response, _ = _get_metric_statistics(
+                    client,
+                    namespace="AWS/EC2",
+                    metric_name=metric_name,
+                    dimensions=[{"Name": "InstanceId", "Value": instance_id or "i-demo"}] if instance_id else [],
+                    period_minutes=period_minutes,
+                    period=300,
+                    statistics=["Sum"],
                 )
 
                 if response.get("Datapoints"):
@@ -178,5 +191,6 @@ def get_all_dashboard_metrics(instance_id: str | None = None, load_balancer_name
         "memory_metrics": get_memory_metrics(),
         "network_metrics": get_network_metrics(instance_id),
         "request_metrics": get_request_count_metric(load_balancer_name),
+        "traffic_history": get_request_traffic_history(),
         "timestamp": datetime.now(timezone.utc),
     }

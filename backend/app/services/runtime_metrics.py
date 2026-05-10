@@ -123,6 +123,55 @@ def get_recent_request_logs(limit: int = 10) -> dict:
     }
 
 
+def get_request_traffic_history(bucket_count: int = 10, window_seconds: int = 60) -> dict:
+    bucket_count = max(1, bucket_count)
+    window_seconds = max(1, window_seconds)
+    bucket_seconds = window_seconds / bucket_count
+
+    with _LOCK:
+        _trim_requests_locked(window_seconds)
+        timestamps = list(_REQUEST_TIMESTAMPS)
+
+    if not timestamps:
+        return {
+            "window_seconds": window_seconds,
+            "bucket_seconds": bucket_seconds,
+            "samples": [
+                {
+                    "label": f"-{window_seconds - int(index * bucket_seconds)}s",
+                    "request_count": 0,
+                    "requests_per_second": 0,
+                    "timestamp": _now(),
+                }
+                for index in range(bucket_count)
+            ],
+            "updated_at": _now(),
+        }
+
+    oldest_timestamp = _now().timestamp() - window_seconds
+    samples = []
+
+    for index in range(bucket_count):
+        bucket_start = oldest_timestamp + (index * bucket_seconds)
+        bucket_end = bucket_start + bucket_seconds
+        count = len([timestamp for timestamp in timestamps if bucket_start <= timestamp.timestamp() < bucket_end])
+        samples.append(
+            {
+                "label": f"-{int(window_seconds - (index + 1) * bucket_seconds)}s",
+                "request_count": count,
+                "requests_per_second": round(count / bucket_seconds, 1),
+                "timestamp": datetime.fromtimestamp(bucket_end, tz=timezone.utc),
+            }
+        )
+
+    return {
+        "window_seconds": window_seconds,
+        "bucket_seconds": bucket_seconds,
+        "samples": samples,
+        "updated_at": _now(),
+    }
+
+
 def _tail_file(path: str, limit: int) -> list[str]:
     try:
         with open(path, "r", encoding="utf-8", errors="ignore") as log_file:
@@ -144,8 +193,14 @@ def get_ec2_logs(limit: int = 12) -> dict:
     candidate_paths = [
         "/host-logs/messages",
         "/host-logs/syslog",
+        "/host-logs/auth.log",
+        "/host-logs/cloud-init.log",
+        "/host-logs/cloud-init-output.log",
         "/var/log/messages",
         "/var/log/syslog",
+        "/var/log/auth.log",
+        "/var/log/cloud-init.log",
+        "/var/log/cloud-init-output.log",
     ]
 
     entries: list[dict] = []

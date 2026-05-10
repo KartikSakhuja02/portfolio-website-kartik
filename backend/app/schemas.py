@@ -91,6 +91,20 @@ class MemoryMetrics(BaseModel):
     error: str | None = None
 
 
+class TrafficSample(BaseModel):
+    label: str
+    request_count: int
+    requests_per_second: float
+    timestamp: datetime
+
+
+class TrafficHistory(BaseModel):
+    window_seconds: int
+    bucket_seconds: float
+    samples: list[TrafficSample]
+    updated_at: datetime
+
+
 class Ec2LogEntry(BaseModel):
     source: str
     message: str
@@ -107,4 +121,5 @@ class DashboardMetricsResponse(BaseModel):
     memory_metrics: MemoryMetrics
     network_metrics: NetworkMetrics
     request_metrics: RequestMetrics
+    traffic_history: TrafficHistory
     timestamp: datetime

@@ -431,11 +431,12 @@ function initializeDashboardMetrics() {
   const requestBar = document.getElementById("dashboard-request-bar");
   const requestPeak = document.getElementById("dashboard-request-peak");
   const requestStatus = document.getElementById("dashboard-request-status");
+  const trafficBars = document.getElementById("traffic-bars");
 
   if (
     !cpuValue || !cpuBar || !cpuLoad || !cpuStatus ||
     !memoryValue || !memoryBar || !memoryLimit || !memoryStatus ||
-    !requestValue || !requestBar || !requestPeak || !requestStatus
+    !requestValue || !requestBar || !requestPeak || !requestStatus || !trafficBars
   ) {
     return;
   }
@@ -470,6 +471,25 @@ function initializeDashboardMetrics() {
     if (value >= (thresholds.critical || 90)) return "CRITICAL";
     if (value >= (thresholds.warning || 70)) return "WARNING";
     return "OPTIMAL";
+  }
+
+  function renderTrafficBars(samples) {
+    const bars = Array.from(trafficBars.children);
+    const safeSamples = Array.isArray(samples) ? samples.slice(-bars.length) : [];
+    const maxCount = Math.max(...safeSamples.map((sample) => sample.request_count || 0), 1);
+
+    bars.forEach((bar, index) => {
+      const sample = safeSamples[index] || { request_count: 0, label: "-", requests_per_second: 0 };
+      const height = Math.max(8, Math.round(((sample.request_count || 0) / maxCount) * 100));
+      bar.style.height = `${height}%`;
+      bar.className = `flex-1 bg-cyan-400/20 hover:bg-cyan-400/40 transition-colors rounded-t-sm relative group`;
+      bar.textContent = "";
+      bar.innerHTML = `
+        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-surface-container p-1 rounded text-[8px] border border-white/10 whitespace-nowrap">
+          ${sample.request_count || 0} reqs / ${(sample.requests_per_second || 0).toFixed(1)} rps
+        </div>
+      `;
+    });
   }
 
   async function refreshDashboardMetrics() {
@@ -518,6 +538,8 @@ function initializeDashboardMetrics() {
       const reqStatusClass = requestPercentage > 75 ? "text-primary" : "text-tertiary-container";
       requestStatus.className = reqStatusClass;
       requestStatus.textContent = requestMetrics.source === "cloudwatch" ? "ALB" : "REALTIME";
+
+      renderTrafficBars(data.traffic_history?.samples || []);
     } catch (error) {
       console.error("Dashboard metrics fetch failed", error);
       cpuValue.textContent = "-";
@@ -560,7 +582,7 @@ function initializeEc2Logs() {
     logsList.innerHTML = "";
 
     if (!entries || entries.length === 0) {
-      logsList.innerHTML = '<p class="text-slate-500">No recent EC2 logs yet.</p>';
+      logsList.innerHTML = '<p class="text-slate-500">No EC2 host logs found. Check that HOST_LOG_DIR is set to /var/log on the instance and restart the container.</p>';
       logsMeta.textContent = `Updated ${new Date(updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
       return;
     }
